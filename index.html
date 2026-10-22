@@ -1,0 +1,158 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hành trình Bổ Đà – Truy tìm 5 dấu ấn di sản</title>
+<style>
+:root{--br:#5C3A21;--ru:#A0522D;--go:#C99A4B;--cr:#F6EEDF;--dk:#2E2118;--gr:#7A6A5A;--ok:#2E7D4F;--no:#B23A2E}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cr);color:var(--dk);font-size:16px;line-height:1.45}
+header{background:var(--br);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px}
+header b{font-family:'Times New Roman',serif;font-size:19px}header .s{font-size:13px;color:#F1DDBB;text-align:right}
+main{max-width:560px;margin:0 auto;padding:16px 16px 90px}
+h1,h2,h3{font-family:'Times New Roman',serif;color:var(--br);margin:.3em 0}
+h1{font-size:30px;line-height:1.15}h2{font-size:23px}
+.card{background:#fff;border:1px solid #E5D5BC;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 2px 6px rgba(92,58,33,.08)}
+.kick{font-size:12px;letter-spacing:.12em;color:var(--ru);font-weight:bold;text-transform:uppercase}
+label{display:block;font-weight:bold;margin:10px 0 4px;font-size:14px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid #CDB89A;border-radius:10px;font-size:16px;font-family:inherit;background:#FFFCF7}
+button{font:inherit;cursor:pointer;border:0;border-radius:11px;padding:12px 16px;font-weight:bold}
+.btn{background:var(--br);color:#fff;width:100%;margin-top:12px;font-size:17px}.btn:disabled{opacity:.45}
+.btn2{background:#fff;color:var(--br);border:1.5px solid var(--br);width:100%;margin-top:10px}
+.small{font-size:13px;color:var(--gr)}
+.st{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;border:1px solid #E5D5BC;background:#fff;margin:9px 0}
+.st .n{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:18px;flex:none;background:#E8DCC8;color:var(--gr)}
+.st.done .n{background:var(--ok);color:#fff}.st.cur{border:2px solid var(--ru)}.st.cur .n{background:var(--ru);color:#fff}
+.st .t{flex:1}.st .t b{display:block}.pts{font-weight:bold;color:var(--ru)}
+.clue{background:#FFF7E6;border-left:5px solid var(--go);padding:12px 14px;border-radius:8px;font-size:17px;font-style:italic}
+.opt{display:block;width:100%;text-align:left;background:#FFFCF7;border:1.5px solid #D9C6A8;color:var(--dk);margin:8px 0;font-weight:normal}
+.opt.right{background:#E3F3E8;border-color:var(--ok)}.opt.wrong{background:#FBE7E4;border-color:var(--no);text-decoration:line-through}.opt.gone{opacity:.35}
+.fb{padding:10px 12px;border-radius:10px;margin-top:8px;font-size:15px}.fb.ok{background:#E3F3E8}.fb.bad{background:#FBE7E4}
+.bar{height:10px;background:#E8DCC8;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ru),var(--go))}
+.badges{display:flex;gap:8px;justify-content:center;margin:10px 0}.badge{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#E8DCC8;color:#fff;font-weight:bold;font-size:12px;text-align:center}
+.badge.on{background:radial-gradient(circle at 35% 30%,#F3D38C,var(--go) 60%,#9B7430)}
+.photo{width:100%;border-radius:10px;margin-top:8px}
+.big{font-family:'Times New Roman',serif;font-size:46px;color:var(--ru);font-weight:bold;text-align:center;line-height:1}
+.code{font-family:monospace;font-size:13px;word-break:break-all;background:#F3EBDD;padding:10px;border-radius:8px}
+video{width:100%;border-radius:12px;background:#000}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #DCCBB0;padding:6px;text-align:left}th{background:#EFE3CF}
+.note{font-size:13px;background:#FFF;border:1px dashed var(--go);padding:10px;border-radius:10px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+</style></head><body>
+<header><div><b>Hành trình Bổ Đà</b><div class="small" style="color:#F1DDBB">Truy tìm 5 dấu ấn di sản</div></div><div class="s" id="hs"></div></header>
+<main id="app"></main>
+<script>
+/* ====== CẤU HÌNH – giáo viên có thể sửa ====== */
+const CONFIG={
+  teacherPin:'2026',              // mã PIN vào chế độ giáo viên
+  hintCost:3,                     // điểm bị trừ khi dùng gợi ý
+  photoPoints:10,                 // điểm nhiệm vụ quan sát (ảnh + ghi chép)
+  firstTry:10, secondTry:5,       // điểm câu hỏi: đúng lần 1 / lần 2
+  website:'https://ditich360-2hbmgqbn.manus.space',
+  stations:[{"id": "ao-mieu", "name": "Ao Miếu", "tag": "Còn gọi là Đền Hạ", "code": "DH27", "clue": "Hành trình bắt đầu ở nơi thấp nhất của quần thể: một ngôi đền bên mặt nước, còn gọi là Đền Hạ, thờ vị thần tướng gắn với đá.", "task": "Chụp ảnh cả nhóm với mặt ao và ngôi đền phía sau.", "ask": "Ghi lại một chi tiết nhóm quan sát thấy ở Đền Hạ (ví dụ: cổng, bức hoành phi, cây cổ thụ…).", "qs": [{"q": "Ao Miếu (Đền Hạ) thờ nhân vật nào?", "o": ["Thạch Linh Thần Tướng", "Phạm Kim Hưng", "Ngô Viết Thụ"], "a": 0, "e": "Hồ sơ di tích ghi Ao Miếu, còn gọi là Đền Hạ, thờ Thạch Linh Thần Tướng."}, {"q": "Ao Miếu còn có tên gọi nào trong quần thể Chùa Bổ Đà?", "o": ["Đền Thượng", "Am Tam Đức", "Đền Hạ"], "a": 2, "e": "Ao Miếu còn được gọi là Đền Hạ, là một trong năm hợp phần chính của khu di tích Chùa Bổ Đà."}, {"q": "Ao và miếu nhỏ phía sau Đền Hạ gắn với truyền tích địa phương nào?", "o": ["Truyền tích Mẹ Đá", "Truyền thuyết Hồ Gươm", "Sự tích bánh chưng"], "a": 0, "e": "Tư liệu Ao Miếu nêu ao Thạch Long và miếu nhỏ gắn với truyền tích Mẹ Đá. Đây là truyền tích địa phương, không phải sự kiện lịch sử được khẳng định."}]}, {"id": "tu-an", "name": "Chùa Tứ Ân", "tag": "Khu chùa chính", "code": "TA92", "clue": "Tìm khu chùa chính với 16 đơn nguyên, 92 gian liên hoàn – bên ngoài khép kín, bên trong thông nhau.", "task": "Chụp cận một đoạn tường đất trình tường (không chạm tay, không viết vẽ lên tường).", "ask": "Theo nhóm, vì sao tường đất dày lại giúp chùa mát về mùa hè?", "qs": [{"q": "Theo hồ sơ di sản, Chùa Tứ Ân có bao nhiêu gian liên hoàn?", "o": ["52 gian", "92 gian", "120 gian"], "a": 1, "e": "Khu Chùa Tứ Ân được mô tả gồm 16 đơn nguyên với 92 gian liên hoàn."}, {"q": "Bố cục kiến trúc nổi bật của khu Chùa Tứ Ân được gọi là gì?", "o": ["Nội thông ngoại bế", "Tháp kính hiện đại", "Thành lũy quân sự"], "a": 0, "e": "Bài học mô tả các dãy nhà và hành lang liên hoàn của Chùa Tứ Ân tạo nên bố cục “nội thông ngoại bế”."}, {"q": "Khu di tích Chùa Bổ Đà được xếp hạng Di tích quốc gia đặc biệt vào năm nào?", "o": ["Năm 2000", "Năm 2016", "Năm 2020"], "a": 1, "e": "Phần lịch sử và dòng thời gian ghi nhận Chùa Bổ Đà được xếp hạng Di tích quốc gia đặc biệt năm 2016."}]}, {"id": "vuon-thap", "name": "Vườn Tháp", "tag": "Không gian tưởng niệm", "code": "VT11", "clue": "Đi tìm khu vườn rộng gần 8.000 m², nơi khoảng 110 tháp và mộ lặng yên dưới tán cây.", "task": "Chụp một ngôi tháp nhiều tầng mà nhóm thấy ấn tượng nhất.", "ask": "Ngôi tháp nhóm chụp có bao nhiêu tầng? (nhóm tự đếm)", "qs": [{"q": "Vườn Tháp Chùa Bổ Đà có khoảng bao nhiêu tháp và mộ lớn nhỏ?", "o": ["Khoảng 40", "Khoảng 110", "Khoảng 300"], "a": 1, "e": "Các nguồn giới thiệu di tích ghi nhận khoảng 110 tháp và mộ trong Vườn Tháp."}, {"q": "Diện tích Vườn Tháp Chùa Bổ Đà được giới thiệu là gần bao nhiêu?", "o": ["800 m²", "8.000 m²", "80.000 m²"], "a": 1, "e": "Theo phần Vườn Tháp, không gian trên sườn núi Phượng Hoàng này rộng gần 8.000 m²."}, {"q": "Các tháp cổ trong Vườn Tháp lưu giữ những gì?", "o": ["Mộc bản gỗ thị", "Vũ khí và áo giáp", "Tro cốt và xá-lị của tăng ni"], "a": 2, "e": "Phần Vườn Tháp mô tả 97 tháp cổ lưu giữ tro cốt và xá-lị của hơn 1.200 tăng ni; đây là không gian tưởng niệm."}]}, {"id": "tam-duc", "name": "Am Tam Đức", "tag": "Sườn núi Phượng Hoàng", "code": "TD05", "clue": "Leo lên lưng chừng núi Phượng Hoàng, phía sau chùa chính, tìm ngôi am năm gian có ba gian giữa làm hai tầng mái.", "task": "Chụp phần mái “chồng diêm hai tầng” của ba gian giữa.", "ask": "Ghi một điểm khác biệt giữa Am Tam Đức và Chùa Tứ Ân mà nhóm nhận thấy.", "qs": [{"q": "Am Tam Đức nằm ở đâu trong khu di tích?", "o": ["Lưng chừng núi Phượng Hoàng, phía sau Chùa Tứ Ân", "Bên bờ sông Cầu", "Ngay ngoài cổng làng Thổ Hà"], "a": 0, "e": "Am Tam Đức nằm ở lưng chừng núi Phượng Hoàng, phía sau Chùa Tứ Ân."}, {"q": "Am Tam Đức có tổng cộng bao nhiêu gian theo phần thông tin hợp phần?", "o": ["Ba gian", "Năm gian", "Chín gian"], "a": 1, "e": "Am Tam Đức có kiến trúc chữ Nhất gồm năm gian, nằm ở lưng chừng núi Phượng Hoàng."}, {"q": "Ba gian giữa của Am Tam Đức có đặc điểm mái như thế nào?", "o": ["Mái bằng bê tông", "Một tầng mái kim loại", "Chồng diêm hai tầng mái"], "a": 2, "e": "Thông tin Am Tam Đức nêu ba gian giữa được làm theo kiểu chồng diêm hai tầng mái."}]}, {"id": "chua-cao", "name": "Chùa Cao", "tag": "Điểm cao trong quần thể", "code": "CC71", "clue": "Chặng cuối nằm cao nhất: ngôi chùa phía sau Am Tam Đức, có phần mái cuốn vòm.", "task": "Chụp ảnh cả nhóm tại Chùa Cao để hoàn thành hành trình.", "ask": "Viết một câu cảm nhận của nhóm sau hành trình.", "qs": [{"q": "Chùa Cao nằm ở vị trí nào so với Am Tam Đức?", "o": ["Phía sau Am Tam Đức", "Bên trong Vườn Tháp", "Ở ngoài khu di tích"], "a": 0, "e": "Chùa Cao nằm phía sau Am Tam Đức trong khu di tích Bổ Đà."}, {"q": "Phần mái của Chùa Cao có đặc điểm nào được nhắc đến trong bài học?", "o": ["Cuốn vòm", "Mái kính toàn bộ", "Mái lá tạm"], "a": 0, "e": "Chùa Cao được mô tả có kiến trúc chữ Nhất theo chiều dọc và phần mái cuốn vòm."}, {"q": "Trong gian trong cùng của Chùa Cao có tượng vị nào?", "o": ["Thạch Linh Thần Tướng", "Quán Thế Âm Bồ Tát", "Phạm Kim Hưng"], "a": 1, "e": "Phần tư liệu kiến trúc Chùa Cao nêu gian trong cùng đặt tượng Quán Thế Âm Bồ Tát."}]}]
+};
+/* ============================================= */
+const S=CONFIG.stations, KEY='bodaHunt.v1', TKEY='bodaHunt.teacher';
+let st=load(); let timer=null;
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){alert('Bộ nhớ trình duyệt đầy – ảnh có thể không được lưu.')}}
+const $=s=>document.querySelector(s); const app=$('#app');
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const maxPts=S.reduce((a,s)=>a+s.qs.length*CONFIG.firstTry+CONFIG.photoPoints,0);
+function score(){return st?st.res.reduce((a,r)=>a+(r?r.pts:0),0):0}
+function fmt(sec){sec=Math.max(0,Math.round(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return (h?h+' giờ ':'')+m+' phút '+String(s).padStart(2,'0')+' giây'}
+function elapsed(){return st?((st.end||Date.now())-st.start)/1000:0}
+function head(){$('#hs').innerHTML=st?`${esc(st.team)}<br><b style="font-size:15px;color:#fff">${score()} điểm</b> · ${st.res.filter(r=>r&&r.done).length}/${S.length}`:''}
+function title(p){const r=p/maxPts; return r>=.9?'Sứ giả di sản':r>=.7?'Người am hiểu':r>=.45?'Bạn đồng hành':'Mầm khám phá'}
+function view(){head(); if(location.hash.startsWith('#gv')) return teacher();
+  if(!st) return home(); if(st.end) return finish();
+  const i=st.res.findIndex(r=>!r||!r.done); if(i<0){st.end=Date.now();save();return finish()}
+  const r=st.res[i]; if(!r||!r.in) return clue(i); return mission(i)}
+/* ---------- MÀN HÌNH ---------- */
+function home(){app.innerHTML=`<div class="card" style="text-align:center"><div class="kick">Trò chơi khám phá tại di tích</div>
+<h1>Truy tìm 5 dấu ấn<br>Chùa Bổ Đà</h1><p>Đi qua 5 hợp phần theo thứ tự từ thấp lên cao. Đến đúng nơi, <b>quét mã QR</b> của trạm để mở nhiệm vụ: quan sát, chụp ảnh và trả lời câu hỏi.</p>
+<div class="badges">${S.map((s,i)=>`<div class="badge">${i+1}</div>`).join('')}</div></div>
+<div class="card"><label>Tên đội</label><input id="team" maxlength="40" placeholder="Ví dụ: Đội Phượng Hoàng">
+<label>Lớp</label><input id="cls" maxlength="20" placeholder="Ví dụ: 10A10"><label>Thành viên</label><input id="mem" maxlength="160" placeholder="Họ tên các bạn trong đội">
+<button class="btn" id="go">Bắt đầu hành trình</button></div>
+<div class="note"><b>Nội quy:</b> giữ trật tự, trang phục lịch sự; không chạm, trèo lên tháp, tượng và hiện vật; không viết vẽ lên tường; đi theo lối đi; nghe theo hướng dẫn của thầy cô và Ban quản lý di tích.</div>
+<button class="btn2" onclick="location.hash='#gv';view()">Chế độ giáo viên</button>`;
+$('#go').onclick=()=>{const t=$('#team').value.trim(),c=$('#cls').value.trim();if(!t||!c)return alert('Nhập tên đội và lớp nhé!');
+ st={team:t,cls:c,mem:$('#mem').value.trim(),start:Date.now(),res:S.map(()=>null)};save();view()}}
+function progress(){return `<div class="bar"><i style="width:${st.res.filter(r=>r&&r.done).length/S.length*100}%"></i></div>`+
+ S.map((s,i)=>{const r=st.res[i],cur=(!r||!r.done)&&st.res.slice(0,i).every(x=>x&&x.done);
+ return `<div class="st ${r&&r.done?'done':cur?'cur':''}"><div class="n">${r&&r.done?'✓':i+1}</div><div class="t"><b>${r&&r.done||cur?esc(s.name):'Trạm bí ẩn'}</b><span class="small">${r&&r.done?'Đã hoàn thành':cur?'Đang tìm…':'Chưa mở'}</span></div>${r&&r.done?`<span class="pts">+${r.pts}</span>`:''}</div>`}).join('')}
+function clue(i){const s=S[i];app.innerHTML=`<div class="kick">Chặng ${i+1} / ${S.length}</div><h2>Manh mối</h2><div class="clue">${esc(s.clue)}</div>
+<div class="card"><b>Đã tìm thấy?</b> Quét mã QR trên bảng của trạm, hoặc nhập mã 4 ký tự in dưới mã QR.
+<button class="btn" id="scan">📷 Quét mã QR</button><div id="cam"></div>
+<label>Hoặc nhập mã trạm</label><div class="row"><input id="code" maxlength="12" placeholder="Ví dụ: AB12" style="text-transform:uppercase"><button class="btn" style="margin:0;flex:.5" id="ok">Mở</button></div>
+<div id="msg"></div></div><h3>Hành trình của đội</h3>${progress()}`;
+$('#ok').onclick=()=>checkin(i,$('#code').value); $('#scan').onclick=()=>scan(i)}
+function norm(c){c=String(c||'').trim().toUpperCase();const m=c.match(/TRAM[=:]([A-Z0-9]+)/);return m?m[1]:c.replace(/^BODA[:\-]/,'')}
+function checkin(i,c){const code=norm(c);const k=S.findIndex(s=>s.code===code);
+ if(k===i){stopCam();st.res[i]={in:Date.now(),q:S[i].qs.map(()=>({tries:0,hint:false,done:false,pts:0})),pts:0,note:'',photo:null,task:false};save();view()}
+ else $('#msg').innerHTML=`<div class="fb bad">${k>=0?`Đây là mã của <b>${esc(S[k].name)}</b>. Hãy đi đúng thứ tự – đọc lại manh mối nhé!`:'Mã chưa đúng, kiểm tra lại nhé.'}</div>`}
+let stream=null;function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
+async function scan(i){const box=$('#cam');
+ if(!('BarcodeDetector' in window)){box.innerHTML='<div class="fb bad">Trình duyệt này chưa hỗ trợ quét trong trò chơi. Hãy nhập mã 4 ký tự in dưới mã QR.</div>';return}
+ try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch(e){box.innerHTML='<div class="fb bad">Không mở được camera. Hãy nhập mã trạm.</div>';return}
+ box.innerHTML='<video id="v" playsinline muted></video><p class="small">Đưa mã QR vào khung hình…</p>';const v=$('#v');v.srcObject=stream;await v.play();
+ const det=new BarcodeDetector({formats:['qr_code']});
+ const loop=async()=>{if(!stream)return;try{const r=await det.detect(v);if(r.length){checkin(i,r[0].rawValue);return}}catch(e){} requestAnimationFrame(loop)};loop()}
+function mission(i){const s=S[i],r=st.res[i];
+ const qhtml=s.qs.map((q,j)=>{const a=r.q[j];return `<div class="card"><div class="kick">Câu hỏi ${j+1}</div><b>${esc(q.q)}</b>
+ ${q.o.map((o,k)=>{let c='opt';if(a.done&&k===q.a)c+=' right';else if((a.wrong||[]).includes(k))c+=' wrong';else if(a.hint&&a.gone===k)c+=' gone';
+ return `<button class="${c}" ${a.done||(a.wrong||[]).includes(k)||(a.hint&&a.gone===k)?'disabled':''} onclick="answer(${i},${j},${k})">${String.fromCharCode(65+k)}. ${esc(o)}</button>`}).join('')}
+ ${a.done?`<div class="fb ${a.pts?'ok':'bad'}">${a.pts?`Chính xác! +${a.pts} điểm.`:'Chưa đúng – đáp án đã được hiện.'} ${esc(q.e)}</div>`:
+ `<button class="btn2" style="margin-top:4px" ${a.hint||q.o.length<3?'disabled':''} onclick="hint(${i},${j})">💡 Gợi ý (−${CONFIG.hintCost} điểm)</button>`}</div>`}).join('');
+ const allQ=r.q.every(a=>a.done);
+ app.innerHTML=`<div class="kick">Chặng ${i+1} · ${esc(s.tag)}</div><h2>${esc(s.name)}</h2>
+ <div class="card"><div class="kick">Nhiệm vụ quan sát (+${CONFIG.photoPoints} điểm)</div><b>📸 ${esc(s.task)}</b>
+ <label>Ảnh của đội</label><input type="file" accept="image/*" capture="environment" onchange="photo(${i},this)">${r.photo?`<img class="photo" src="${r.photo}">`:''}
+ <label>${esc(s.ask)}</label><textarea id="note" rows="2" oninput="st.res[${i}].note=this.value;save()">${esc(r.note)}</textarea>
+ <p class="small">Thầy cô sẽ xem ảnh và ghi chép của đội khi tổng kết.</p></div>${qhtml}
+ <button class="btn" id="fin" ${allQ?'':'disabled'}>${allQ?'Hoàn thành trạm '+(i+1):'Trả lời hết câu hỏi để hoàn thành trạm'}</button>`;
+ $('#fin').onclick=()=>{const note=(r.note||'').trim();if(!r.photo&&!note&&!confirm('Đội chưa có ảnh hoặc ghi chép – sẽ không được điểm nhiệm vụ quan sát. Vẫn hoàn thành?'))return;
+  r.task=!!(r.photo||note);r.pts=r.q.reduce((a,x)=>a+x.pts,0)+(r.task?CONFIG.photoPoints:0);r.done=true;r.out=Date.now();save();
+  const last=st.res.every(x=>x&&x.done);if(last)st.end=Date.now(),save();celebrate(i)}}
+window.answer=(i,j,k)=>{const q=S[i].qs[j],a=st.res[i].q[j];if(a.done)return;a.tries++;
+ if(k===q.a){a.done=true;a.pts=Math.max(0,(a.tries===1?CONFIG.firstTry:a.tries===2?CONFIG.secondTry:0)-(a.hint?CONFIG.hintCost:0))}
+ else{a.wrong=(a.wrong||[]).concat(k);const left=q.o.length-a.wrong.length-(a.hint?1:0);if(a.tries>=2||left<=1){a.done=true;a.pts=0}}
+ save();mission(i);head()};
+window.hint=(i,j)=>{const q=S[i].qs[j],a=st.res[i].q[j];const c=q.o.map((_,k)=>k).filter(k=>k!==q.a&&!(a.wrong||[]).includes(k));if(!c.length)return;a.hint=true;a.gone=c[Math.floor(Math.random()*c.length)];save();mission(i)};
+window.photo=(i,inp)=>{const f=inp.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),m=640,sc=Math.min(1,m/Math.max(img.width,img.height));
+ c.width=img.width*sc;c.height=img.height*sc;c.getContext('2d').drawImage(img,0,0,c.width,c.height);st.res[i].photo=c.toDataURL('image/jpeg',.6);save();mission(i)};img.src=URL.createObjectURL(f)};
+function celebrate(i){head();const s=S[i],r=st.res[i],last=st.res.every(x=>x&&x.done);
+ app.innerHTML=`<div class="card" style="text-align:center"><div class="kick">Hoàn thành chặng ${i+1}</div><h2>Dấu ấn ${esc(s.name)}</h2>
+ <div class="badges">${S.map((x,k)=>`<div class="badge ${st.res[k]&&st.res[k].done?'on':''}">${k+1}</div>`).join('')}</div>
+ <div class="big">+${r.pts}</div><p>Tổng điểm: <b>${score()}</b> / ${maxPts}</p>
+ <button class="btn" onclick="view()">${last?'Xem kết quả cuối cùng':'Nhận manh mối chặng '+(i+2)}</button></div>`}
+function packCode(){const o={t:st.team,c:st.cls,m:st.mem,s:score(),x:maxPts,e:Math.round(elapsed()),d:new Date(st.start).toISOString().slice(0,16),p:st.res.map(r=>r?r.pts:0),n:st.res.map(r=>r?(r.note||'').slice(0,80):'')};
+ const j=JSON.stringify(o);let h=0;for(const ch of j)h=(h*31+ch.charCodeAt(0))>>>0;return btoa(unescape(encodeURIComponent(j)))+'.'+(h%9973).toString(36)}
+function unpack(code){const [b,c]=code.trim().split('.');const j=decodeURIComponent(escape(atob(b)));let h=0;for(const ch of j)h=(h*31+ch.charCodeAt(0))>>>0;if((h%9973).toString(36)!==c)throw 0;return JSON.parse(j)}
+function finish(){head();const p=score(),code=packCode();
+ app.innerHTML=`<div class="card" style="text-align:center"><div class="kick">Hoàn thành hành trình</div><h1>${esc(title(p))}</h1>
+ <p><b>${esc(st.team)}</b> · Lớp ${esc(st.cls)}</p><div class="badges">${S.map(()=>`<div class="badge on">★</div>`).join('')}</div>
+ <div class="big">${p}<span style="font-size:22px"> / ${maxPts}</span></div><p>Thời gian: <b>${fmt(elapsed())}</b></p></div>
+ <div class="card"><h3>Kết quả từng trạm</h3><table><tr><th>Trạm</th><th>Điểm</th><th>Ghi chép của đội</th></tr>${S.map((s,i)=>`<tr><td>${esc(s.name)}</td><td>${st.res[i].pts}</td><td>${esc(st.res[i].note||'')}</td></tr>`).join('')}</table>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px">${st.res.filter(r=>r.photo).map(r=>`<img class="photo" style="margin:0" src="${r.photo}">`).join('')}</div></div>
+ <div class="card"><h3>Mã kết quả gửi thầy cô</h3><p class="small">Thầy cô nhập mã này ở “Chế độ giáo viên” để tổng hợp bảng xếp hạng. Mã có kiểm tra chống sửa điểm.</p><div class="code" id="cd">${code}</div>
+ <button class="btn" onclick="navigator.clipboard&&navigator.clipboard.writeText('${code}').then(()=>alert('Đã sao chép mã'))">Sao chép mã</button>
+ <a class="btn2" style="display:block;text-align:center;text-decoration:none;padding:12px" href="${CONFIG.website}" target="_blank">Ôn lại kiến thức trên Website học liệu số ↗</a></div>
+ <button class="btn2" onclick="if(confirm('Xóa dữ liệu và chơi lại từ đầu?')){localStorage.removeItem(KEY);st=null;view()}">Chơi lại từ đầu</button>`}
+/* ---------- CHẾ ĐỘ GIÁO VIÊN ---------- */
+function teacher(){if(sessionStorage.getItem('gv')!=='1'){app.innerHTML=`<div class="card"><h2>Chế độ giáo viên</h2><label>Mã PIN</label><input id="pin" type="password" inputmode="numeric"><button class="btn" id="in">Vào</button><button class="btn2" onclick="location.hash='';view()">← Quay lại trò chơi</button></div>`;
+ $('#in').onclick=()=>{if($('#pin').value===CONFIG.teacherPin){sessionStorage.setItem('gv','1');teacher()}else alert('Sai mã PIN')};return}
+ let list=[];try{list=JSON.parse(localStorage.getItem(TKEY))||[]}catch(e){}
+ list.sort((a,b)=>b.s-a.s||a.e-b.e);
+ app.innerHTML=`<h2>Bảng xếp hạng các đội</h2><div class="card"><label>Dán mã kết quả của đội</label><textarea id="rc" rows="3"></textarea><button class="btn" id="add">Thêm vào bảng</button><div id="m"></div></div>
+ <div class="card"><table><tr><th>#</th><th>Đội</th><th>Lớp</th><th>Điểm</th><th>Thời gian</th></tr>${list.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.t)}</td><td>${esc(r.c)}</td><td><b>${r.s}</b>/${r.x}</td><td>${fmt(r.e)}</td></tr>`).join('')||'<tr><td colspan="5">Chưa có đội nào.</td></tr>'}</table>
+ <button class="btn" id="csv" ${list.length?'':'disabled'}>Tải bảng điểm (CSV mở bằng Excel)</button><button class="btn2" id="clr">Xóa bảng</button></div>
+ <div class="card"><h3>Mã các trạm (in trên bảng QR)</h3><table><tr><th>Trạm</th><th>Hợp phần</th><th>Mã</th></tr>${S.map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.name)}</td><td><b>${s.code}</b></td></tr>`).join('')}</table></div>
+ <button class="btn2" onclick="location.hash='';view()">← Quay lại trò chơi</button>`;
+ $('#add').onclick=()=>{try{const r=unpack($('#rc').value);if(list.some(x=>x.t===r.t&&x.d===r.d))throw 1;list.push(r);localStorage.setItem(TKEY,JSON.stringify(list));teacher()}catch(e){$('#m').innerHTML=`<div class="fb bad">${e===1?'Đội này đã có trong bảng.':'Mã không hợp lệ hoặc đã bị sửa.'}</div>`}};
+ $('#clr').onclick=()=>{if(confirm('Xóa toàn bộ bảng xếp hạng?')){localStorage.removeItem(TKEY);teacher()}};
+ $('#csv').onclick=()=>{const rows=[['Hạng','Đội','Lớp','Thành viên','Điểm','Tối đa','Thời gian (giây)','Bắt đầu',...S.map(s=>s.name),...S.map(s=>'Ghi chép '+s.name)]].concat(list.map((r,i)=>[i+1,r.t,r.c,r.m,r.s,r.x,r.e,r.d,...r.p,...r.n]));
+  const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='bang-diem-hanh-trinh-bo-da.csv';a.click()}}
+/* ---------- KHỞI ĐỘNG ---------- */
+(function(){const m=location.hash.match(/tram=([A-Za-z0-9]+)/)||location.search.match(/tram=([A-Za-z0-9]+)/);
+ if(m&&st&&!st.end){const i=st.res.findIndex(r=>!r||!r.done);if(i>=0&&!(st.res[i]&&st.res[i].in)){history.replaceState(null,'',location.pathname);view();checkin(i,m[1]);return}}
+ if(m)history.replaceState(null,'',location.pathname);view()})();
+window.addEventListener('hashchange',view);
+</script></body></html>
