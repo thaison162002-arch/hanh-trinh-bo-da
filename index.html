@@ -170,4 +170,5 @@ function teacher(){if(sessionStorage.getItem('gv')!=='1'){app.innerHTML=`<div cl
  if(m&&st&&!st.end){const i=st.res.findIndex(r=>!r||!r.done);if(i>=0&&!(st.res[i]&&st.res[i].in)){history.replaceState(null,'',location.pathname);view();checkin(i,m[1]);return}}
  if(m){if(!st)window.__site=1;history.replaceState(null,'',location.pathname)}view()})();
 window.addEventListener('hashchange',view);
-</script></body></html>
+</script><script src="gate.js"></script><script>if(!location.hash.startsWith("#gv"))__gate(location.href,false,true)</script>
+</body></html>
